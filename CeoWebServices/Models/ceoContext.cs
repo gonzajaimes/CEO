@@ -4,13 +4,13 @@ using Microsoft.EntityFrameworkCore.Metadata;
 
 namespace CeoWebServices.Models
 {
-    public partial class ceoContext : DbContext
+    public partial class CeoContext : DbContext
     {
-        public ceoContext()
+        public CeoContext()
         {
         }
 
-        public ceoContext(DbContextOptions<ceoContext> options)
+        public CeoContext(DbContextOptions<CeoContext> options)
             : base(options)
         {
         }
@@ -66,15 +66,7 @@ namespace CeoWebServices.Models
         public virtual DbSet<VehmantVehtpm> VehmantVehtpm { get; set; }
         public virtual DbSet<VehTipomant> VehTipomant { get; set; }
 
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            if (!optionsBuilder.IsConfigured)
-            {
-#warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
-                optionsBuilder.UseNpgsql("Host=192.168.0.118;Port=5432;Database=ceo;Username=postgres;Password=elprimero");
-            }
-        }
-
+       
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.HasPostgresExtension("dblink");
