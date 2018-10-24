@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+
 using CeoWebServices.Models;
 
 namespace CeoWebServices.Controllers
@@ -37,6 +38,46 @@ namespace CeoWebServices.Controllers
             }
 
             var proyectos = await _context.Proyectos.FindAsync(id);
+
+            if (proyectos == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(proyectos);
+        }
+
+        // GET: api/Proyectos/search/keyword
+
+        [HttpGet("search/{keyword}")]
+        public async Task<IActionResult> GetProyectos([FromRoute] string keyword)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            List<Proyectos> proyectos = await _context.Proyectos.Where(m => m.PryNombreDelProyecto.Contains(keyword)).ToListAsync();
+
+            if (proyectos == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(proyectos);
+        }
+        // GET: api/Proyectos/clientes
+
+        [HttpGet("clientes")]
+        public async Task<IActionResult> GetClientes()
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            List<Proyectos> proyectos = await _context.Proyectos.Include(p => p.PryIdEmpresaNavigation)
+                .ToListAsync();
 
             if (proyectos == null)
             {

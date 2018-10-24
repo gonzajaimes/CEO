@@ -27,7 +27,7 @@ namespace CeoWebServices
         {
 
 
-            services.AddMvc();
+            services.AddMvc().AddJsonOptions(x => x.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
                 //add postgres connection
             services.AddEntityFrameworkNpgsql().AddDbContext<CeoContext>(opt =>
             opt.UseNpgsql(Configuration.GetConnectionString("CeoPostgresConnection")));
