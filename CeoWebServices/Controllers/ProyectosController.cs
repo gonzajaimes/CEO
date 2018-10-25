@@ -76,10 +76,22 @@ namespace CeoWebServices.Controllers
                 return BadRequest(ModelState);
             }
 
-            List<Proyectos> proyectos = await _context.Proyectos.Include(p => p.PryIdEmpresaNavigation)
-                .ToListAsync();
+          
 
-            if (proyectos == null)
+
+            var proyectos = await _context.Proyectos
+               .GroupBy(p => p.PryIdEmpresaNavigation)
+               .Select(g => new MenuEmpresa
+               {
+                   IdEmpresa = g.Key.EmpIdEmpresa,
+                   RazonSocial= g.Key.EmpRazonSocial,
+                   FechaUltimoContrato = g.Max(p => p.PryFechaContrato),
+                   NumeroContratos = g.Count()
+               })
+               .OrderByDescending(g => g.FechaUltimoContrato)
+               .Take(50).ToListAsync();
+
+         if (proyectos == null)
             {
                 return NotFound();
             }
