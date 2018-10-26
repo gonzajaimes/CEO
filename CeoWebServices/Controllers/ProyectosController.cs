@@ -77,9 +77,7 @@ namespace CeoWebServices.Controllers
             }
 
           
-
-
-            var proyectos = await _context.Proyectos
+            List<MenuEmpresa> proyectos = await _context.Proyectos
                .GroupBy(p => p.PryIdEmpresaNavigation)
                .Select(g => new MenuEmpresa
                {
