@@ -49,15 +49,15 @@ namespace CeoWebServices.Controllers
 
         // GET: api/Proyectos/search/keyword
 
-        [HttpGet("search/{keyword}")]
-        public async Task<IActionResult> GetProyectos([FromRoute] string keyword)
+        [HttpGet("searchid/{idClient}")]
+        public async Task<IActionResult> GetProyectosByClient([FromRoute] decimal idClient)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            List<Proyectos> proyectos = await _context.Proyectos.Where(m => m.PryNombreDelProyecto.Contains(keyword)).ToListAsync();
+            List<Proyectos> proyectos = await _context.Proyectos.Where(m => m.PryIdEmpresa.Equals(idClient)).ToListAsync();
 
             if (proyectos == null)
             {
