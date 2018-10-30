@@ -50,14 +50,15 @@ namespace CeoWebServices.Controllers
         // GET: api/Proyectos/search/keyword
 
         [HttpGet("searchid/{idClient}")]
-        public async Task<IActionResult> GetProyectosByClient([FromRoute] decimal idClient)
+        public async Task<IActionResult> GetProyectosByClient([FromRoute] int idClient)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            List<Proyectos> proyectos = await _context.Proyectos.Where(m => m.PryIdEmpresa.Equals(idClient)).ToListAsync();
+            List<Proyectos> proyectos = await _context.Proyectos.Where(m => m.PryIdEmpresa.Equals(idClient))
+                .OrderByDescending(p=> p.PryFechaContrato).ToListAsync();
 
             if (proyectos == null)
             {
