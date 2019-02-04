@@ -1,12 +1,9 @@
-﻿using System;
+﻿using CeoWebServices.Models;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-
-using CeoWebServices.Models;
 
 namespace CeoWebServices.Controllers
 {
@@ -25,7 +22,7 @@ namespace CeoWebServices.Controllers
         [HttpGet]
         public IEnumerable<Proyectos> GetProyectos()
         {
-            return _context.Proyectos;
+            return _context.Proyectos.Include("PryIdEmpresaNavigation").OrderByDescending(p => p.PryFechaContrato).Take(50);
         }
 
         // GET: api/Proyectos/5
