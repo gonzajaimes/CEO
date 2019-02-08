@@ -48,6 +48,10 @@ namespace CeoWebServices.Models
 
         //custom properties to read on the app
         public string PryCompanyName { get; set; }
+        public string PryCityName { get; set; }
+        public string PryStateName { get; set; }
+        public string PryCategory { get; set; }
+        public string PrySubCategory { get; set; }
 
     }
 }

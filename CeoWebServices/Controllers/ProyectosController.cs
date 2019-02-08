@@ -68,6 +68,11 @@ namespace CeoWebServices.Controllers
                 PryCodRup = p.PryCodRup,
                 PryActCon = p.PryActCon,
                 PryCompanyName = p.PryIdEmpresaNavigation.EmpRazonSocial,
+                PryCityName = p.Pry.CieNombre,
+                PryStateName = p.Pry.CieIdDepartamentoNavigation.DepNombre,
+                PryCategory = p.PryIdCategoriaContratoNavigation.CcoDescripcion,
+                PrySubCategory =p.PryIdSubcategoriaContratoNavigation.ScoDescripcionSubcategoria,
+               
             }).OrderByDescending(p => p.PryFechaContrato);
         }
 
