@@ -52,6 +52,15 @@ namespace CeoWebServices.Models
         public string PryStateName { get; set; }
         public string PryCategory { get; set; }
         public string PrySubCategory { get; set; }
+        public DateTime? PryEndDateReal { get; set; }
+        public decimal? PryAmortForwardPayment { get; set; }
+        public decimal? PryBalanceForwardPayment { get; set; }
+        public decimal? PryWarrantyFund { get; set; }
+        public decimal? PryExecValueBefVat { get; set; }
+        public decimal? PryExecValue { get; set; }
+        public decimal? PryVatValue { get; set; }
+        public decimal? PrySMLV { get; set; }
+
 
     }
 }

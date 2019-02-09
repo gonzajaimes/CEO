@@ -71,8 +71,14 @@ namespace CeoWebServices.Controllers
                 PryCityName = p.Pry.CieNombre,
                 PryStateName = p.Pry.CieIdDepartamentoNavigation.DepNombre,
                 PryCategory = p.PryIdCategoriaContratoNavigation.CcoDescripcion,
-                PrySubCategory =p.PryIdSubcategoriaContratoNavigation.ScoDescripcionSubcategoria,
-               
+                PrySubCategory = p.PryIdSubcategoriaContratoNavigation.ScoDescripcionSubcategoria,
+                PryEndDateReal = p.Actas.Where(a => a.ActConcepto == "TERMINACION").Select(a => a.ActFecTerminaContraactual).FirstOrDefault(),
+                PryAmortForwardPayment = p.Actas.Sum(a => a.ActValorAmortizaAnticipo),
+                PryBalanceForwardPayment = p.Actas.Sum(a => a.ActValorAnticipo) - p.Actas.Sum(a => a.ActValorAmortizaAnticipo),
+                PryWarrantyFund = p.Actas.Sum(a => a.ActValorfg),
+                PryExecValue = p.Actas.Sum(a => a.ActValorEjecutado),
+                PryExecValueBefVat = p.Actas.Sum(a => a.ActValorAntesiva),
+                PryVatValue = p.Actas.Sum(a => a.ActValorIva),
             }).OrderByDescending(p => p.PryFechaContrato);
         }
 
