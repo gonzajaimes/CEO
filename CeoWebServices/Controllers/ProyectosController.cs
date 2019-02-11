@@ -79,6 +79,12 @@ namespace CeoWebServices.Controllers
                 PryExecValue = p.Actas.Sum(a => a.ActValorEjecutado),
                 PryExecValueBefVat = p.Actas.Sum(a => a.ActValorAntesiva),
                 PryVatValue = p.Actas.Sum(a => a.ActValorIva),
+                PrySMLV = p.PryEjecutado == "N"? null : 
+                          p.Actas.Sum(a => a.ActValorEjecutado) /
+                           _context.Smmlv.Where(s => s.SmmYear == p.Actas.Where(
+                                      a => a.ActConcepto == "TERMINACION").Select(
+                                      a => a.ActFecTerminaContraactual.Value.Year).FirstOrDefault())
+                                     .Select(s=>s.SmmValue).FirstOrDefault(),
             }).OrderByDescending(p => p.PryFechaContrato);
         }
 
