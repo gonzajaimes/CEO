@@ -8,7 +8,7 @@ namespace CeoWebServices.Controllers
     using CeoWebServices.Models;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.EntityFrameworkCore;
-   
+    
 
     [Route("api/[controller]")]
     [ApiController]
@@ -25,7 +25,7 @@ namespace CeoWebServices.Controllers
         [HttpGet]
         public IEnumerable<Project> GetProyectos()
         {
-            // return _context.Proyectos.Include("PryIdEmpresaNavigation").OrderByDescending(p => p.PryFechaContrato).Take(100);
+            
             return _context.Proyectos.Select(p => new Project
             {
                 PryIdProyecto = p.PryIdProyecto,
@@ -105,6 +105,45 @@ namespace CeoWebServices.Controllers
             }
 
             return Ok(proyectos);
+        }
+
+        // GET: api/Proyectos/actas/id
+
+        [HttpGet("actas/{idProject}")]
+        public async Task<IActionResult> GetActas([FromRoute] decimal idProject)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            List<Actas> actas = await _context.Actas.Where(a=> a.ActIdProyecto.Equals(idProject)).ToListAsync();
+            //var additionalValues = await _context.Proyectos.
+            //    Where(p => p.PryIdProyecto.Equals(idProject)).
+            //    Select(p => new AdditionalValues
+            //    {
+            //        IdProject = idProject,
+            //        Income = p.Actas.Sum(a => a.ActValorAntesiva),
+            //        ExecutedCost = p.PryCostoteje,
+            //        PercCostEffectiveness = p.PryCostoteje == 0 ? 0 :
+            //                                        (p.Actas.Sum(a => a.ActValorAntesiva) - p.PryCostoteje) /
+            //                                         p.Actas.Sum(a => a.ActValorAntesiva),
+            //        ContractExecTime =  p.Actas.Where(a =>
+            //                            a.ActConcepto == "INICIO" ||
+            //                            a.ActConcepto == "AMPLIACION PLAZO" ||
+            //                            a.ActConcepto == "REINICIO" ||
+            //                            a.ActConcepto == "AMPL. PLAZO Y OBRA").
+            //                                    Max(a => a.ActFechaTermina) - p.PryFechaInicio,
+
+            //    }).FirstOrDefaultAsync();    
+
+
+            if (actas == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(actas);
         }
 
         // GET: api/Proyectos/search/keyword
