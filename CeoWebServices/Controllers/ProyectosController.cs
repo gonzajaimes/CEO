@@ -107,6 +107,75 @@ namespace CeoWebServices.Controllers
             return Ok(proyectos);
         }
 
+        // GET: api/Proyectos/executed/id
+
+        [HttpGet("executed/{executedValue}")]
+        public IEnumerable<Project> GetProyectosExecuted([FromRoute] string executedValue)
+        {
+
+            return _context.Proyectos.Where(p=>p.PryEjecutado == executedValue).Select(p => new Project
+            {
+                PryIdProyecto = p.PryIdProyecto,
+                PryIdCategoriaContrato = p.PryIdCategoriaContrato,
+                PryIdSubcategoriaContrato = p.PryIdSubcategoriaContrato,
+                PryIdCiudad = p.PryIdCiudad,
+                PryIdDepartamento = p.PryIdDepartamento,
+                PryNombreDelProyecto = p.PryNombreDelProyecto,
+                PryUbicacion = p.PryUbicacion,
+                PryIdEmpresa = p.PryIdEmpresa,
+                PryNumeroContrato = p.PryNumeroContrato,
+                PryFechaInicio = p.PryFechaInicio,
+                PryFechaTerminacion = p.PryFechaTerminacion,
+                PryValorInicial = p.PryValorInicial,
+                PryAdicionesNumero = p.PryAdicionesNumero,
+                PryAdicionesValor = p.PryAdicionesValor,
+                PryValorFinal = p.PryValorFinal,
+                PryFormalidad = p.PryFormalidad,
+                PryValorOfertado = p.PryValorOfertado,
+                PryReajustesNumero = p.PryReajustesNumero,
+                PryReajustesValor = p.PryReajustesValor,
+                PryValorAnticipo = p.PryValorAnticipo,
+                PryAlertaActiva = p.PryAlertaActiva,
+                PryEjecutado = p.PryEjecutado,
+                PryFechaContrato = p.PryFechaContrato,
+                PryValorFinalConIva = p.PryValorFinalConIva,
+                PryPlazoFinal = p.PryPlazoFinal,
+                PrySatisfaccion = p.PrySatisfaccion,
+                PryDigitalizado = p.PryDigitalizado,
+                PryCertObra = p.PryCertObra,
+                PryCertTimbre = p.PryCertTimbre,
+                PryCostoteje = p.PryCostoteje,
+                PryIvaporc = p.PryIvaporc,
+                PryFgporc = p.PryFgporc,
+                PryAntiporc = p.PryAntiporc,
+                PryTipoanti = p.PryTipoanti,
+                PryCodConta = p.PryCodConta,
+                PryIdProyPadre = p.PryIdProyPadre,
+                PryDiasTerminacion = p.PryDiasTerminacion,
+                PryCodRup = p.PryCodRup,
+                PryActCon = p.PryActCon,
+                PryCompanyName = p.PryIdEmpresaNavigation.EmpRazonSocial,
+                PryCityName = p.Pry.CieNombre,
+                PryStateName = p.Pry.CieIdDepartamentoNavigation.DepNombre,
+                PryCategory = p.PryIdCategoriaContratoNavigation.CcoDescripcion,
+                PrySubCategory = p.PryIdSubcategoriaContratoNavigation.ScoDescripcionSubcategoria,
+                PryEndDateReal = p.Actas.Where(a => a.ActConcepto == "TERMINACION").Select(a => a.ActFecTerminaContraactual).FirstOrDefault(),
+                PryAmortForwardPayment = p.Actas.Sum(a => a.ActValorAmortizaAnticipo),
+                PryBalanceForwardPayment = p.Actas.Sum(a => a.ActValorAnticipo) - p.Actas.Sum(a => a.ActValorAmortizaAnticipo),
+                PryWarrantyFund = p.Actas.Sum(a => a.ActValorfg),
+                PryExecValue = p.Actas.Sum(a => a.ActValorEjecutado),
+                PryExecValueBefVat = p.Actas.Sum(a => a.ActValorAntesiva),
+                PryVatValue = p.Actas.Sum(a => a.ActValorIva),
+                PrySMLV = p.PryEjecutado == "N" ? null :
+                          p.Actas.Sum(a => a.ActValorEjecutado) /
+                           _context.Smmlv.Where(s => s.SmmYear == p.Actas.Where(
+                                      a => a.ActConcepto == "TERMINACION").Select(
+                                      a => a.ActFecTerminaContraactual.Value.Year).FirstOrDefault())
+                                     .Select(s => s.SmmValue).FirstOrDefault(),
+            }).OrderByDescending(p => p.PryFechaContrato);
+        }
+
+
         // GET: api/Proyectos/actas/id
 
         [HttpGet("actas/{idProject}")]
@@ -118,25 +187,7 @@ namespace CeoWebServices.Controllers
             }
 
             List<Actas> actas = await _context.Actas.Where(a=> a.ActIdProyecto.Equals(idProject)).ToListAsync();
-            //var additionalValues = await _context.Proyectos.
-            //    Where(p => p.PryIdProyecto.Equals(idProject)).
-            //    Select(p => new AdditionalValues
-            //    {
-            //        IdProject = idProject,
-            //        Income = p.Actas.Sum(a => a.ActValorAntesiva),
-            //        ExecutedCost = p.PryCostoteje,
-            //        PercCostEffectiveness = p.PryCostoteje == 0 ? 0 :
-            //                                        (p.Actas.Sum(a => a.ActValorAntesiva) - p.PryCostoteje) /
-            //                                         p.Actas.Sum(a => a.ActValorAntesiva),
-            //        ContractExecTime =  p.Actas.Where(a =>
-            //                            a.ActConcepto == "INICIO" ||
-            //                            a.ActConcepto == "AMPLIACION PLAZO" ||
-            //                            a.ActConcepto == "REINICIO" ||
-            //                            a.ActConcepto == "AMPL. PLAZO Y OBRA").
-            //                                    Max(a => a.ActFechaTermina) - p.PryFechaInicio,
-
-            //    }).FirstOrDefaultAsync();    
-
+            
 
             if (actas == null)
             {
