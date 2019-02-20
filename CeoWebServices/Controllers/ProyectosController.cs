@@ -85,6 +85,7 @@ namespace CeoWebServices.Controllers
                                       a => a.ActConcepto == "TERMINACION").Select(
                                       a => a.ActFecTerminaContraactual.Value.Year).FirstOrDefault())
                                      .Select(s=>s.SmmValue).FirstOrDefault(),
+                AreaProject = p.AreaProyecto,
             }).OrderByDescending(p => p.PryFechaContrato);
         }
 
@@ -107,72 +108,25 @@ namespace CeoWebServices.Controllers
             return Ok(proyectos);
         }
 
-        // GET: api/Proyectos/executed/id
+        // GET: api/Proyectos/areaproyectos/id
 
-        [HttpGet("executed/{executedValue}")]
-        public IEnumerable<Project> GetProyectosExecuted([FromRoute] string executedValue)
+        [HttpGet("areaproyectos/{idProject}")]
+        public async Task<IActionResult> GetAreaProyectos([FromRoute] decimal idProject)
         {
-
-            return _context.Proyectos.Where(p=>p.PryEjecutado == executedValue).Select(p => new Project
+            if (!ModelState.IsValid)
             {
-                PryIdProyecto = p.PryIdProyecto,
-                PryIdCategoriaContrato = p.PryIdCategoriaContrato,
-                PryIdSubcategoriaContrato = p.PryIdSubcategoriaContrato,
-                PryIdCiudad = p.PryIdCiudad,
-                PryIdDepartamento = p.PryIdDepartamento,
-                PryNombreDelProyecto = p.PryNombreDelProyecto,
-                PryUbicacion = p.PryUbicacion,
-                PryIdEmpresa = p.PryIdEmpresa,
-                PryNumeroContrato = p.PryNumeroContrato,
-                PryFechaInicio = p.PryFechaInicio,
-                PryFechaTerminacion = p.PryFechaTerminacion,
-                PryValorInicial = p.PryValorInicial,
-                PryAdicionesNumero = p.PryAdicionesNumero,
-                PryAdicionesValor = p.PryAdicionesValor,
-                PryValorFinal = p.PryValorFinal,
-                PryFormalidad = p.PryFormalidad,
-                PryValorOfertado = p.PryValorOfertado,
-                PryReajustesNumero = p.PryReajustesNumero,
-                PryReajustesValor = p.PryReajustesValor,
-                PryValorAnticipo = p.PryValorAnticipo,
-                PryAlertaActiva = p.PryAlertaActiva,
-                PryEjecutado = p.PryEjecutado,
-                PryFechaContrato = p.PryFechaContrato,
-                PryValorFinalConIva = p.PryValorFinalConIva,
-                PryPlazoFinal = p.PryPlazoFinal,
-                PrySatisfaccion = p.PrySatisfaccion,
-                PryDigitalizado = p.PryDigitalizado,
-                PryCertObra = p.PryCertObra,
-                PryCertTimbre = p.PryCertTimbre,
-                PryCostoteje = p.PryCostoteje,
-                PryIvaporc = p.PryIvaporc,
-                PryFgporc = p.PryFgporc,
-                PryAntiporc = p.PryAntiporc,
-                PryTipoanti = p.PryTipoanti,
-                PryCodConta = p.PryCodConta,
-                PryIdProyPadre = p.PryIdProyPadre,
-                PryDiasTerminacion = p.PryDiasTerminacion,
-                PryCodRup = p.PryCodRup,
-                PryActCon = p.PryActCon,
-                PryCompanyName = p.PryIdEmpresaNavigation.EmpRazonSocial,
-                PryCityName = p.Pry.CieNombre,
-                PryStateName = p.Pry.CieIdDepartamentoNavigation.DepNombre,
-                PryCategory = p.PryIdCategoriaContratoNavigation.CcoDescripcion,
-                PrySubCategory = p.PryIdSubcategoriaContratoNavigation.ScoDescripcionSubcategoria,
-                PryEndDateReal = p.Actas.Where(a => a.ActConcepto == "TERMINACION").Select(a => a.ActFecTerminaContraactual).FirstOrDefault(),
-                PryAmortForwardPayment = p.Actas.Sum(a => a.ActValorAmortizaAnticipo),
-                PryBalanceForwardPayment = p.Actas.Sum(a => a.ActValorAnticipo) - p.Actas.Sum(a => a.ActValorAmortizaAnticipo),
-                PryWarrantyFund = p.Actas.Sum(a => a.ActValorfg),
-                PryExecValue = p.Actas.Sum(a => a.ActValorEjecutado),
-                PryExecValueBefVat = p.Actas.Sum(a => a.ActValorAntesiva),
-                PryVatValue = p.Actas.Sum(a => a.ActValorIva),
-                PrySMLV = p.PryEjecutado == "N" ? null :
-                          p.Actas.Sum(a => a.ActValorEjecutado) /
-                           _context.Smmlv.Where(s => s.SmmYear == p.Actas.Where(
-                                      a => a.ActConcepto == "TERMINACION").Select(
-                                      a => a.ActFecTerminaContraactual.Value.Year).FirstOrDefault())
-                                     .Select(s => s.SmmValue).FirstOrDefault(),
-            }).OrderByDescending(p => p.PryFechaContrato);
+                return BadRequest(ModelState);
+            }
+
+            List<AreaProyecto> areaProyectos = await _context.AreaProyecto.Include(a=> a.ApyIdAreaNavigation).Where(a => a.ApyIdProyecto.Equals(idProject)).ToListAsync();
+
+
+            if (areaProyectos == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(areaProyectos);
         }
 
 

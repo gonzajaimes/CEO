@@ -60,6 +60,7 @@ namespace CeoWebServices.Models
         public decimal? PryExecValue { get; set; }
         public decimal? PryVatValue { get; set; }
         public decimal? PrySMLV { get; set; }
+        public ICollection<AreaProyecto> AreaProject { get; set; }
 
 
     }
