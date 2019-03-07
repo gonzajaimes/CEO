@@ -40,14 +40,20 @@ namespace CeoWebServices.Controllers
                 PryFechaInicio = p.PryFechaInicio,
                 PryFechaTerminacion = p.PryFechaTerminacion,
                 PryValorInicial = p.PryValorInicial,
-                PryAdicionesNumero = p.PryAdicionesNumero,
-                PryAdicionesValor = p.PryAdicionesValor,
+                PryAdicionesNumero = p.Actas.Where(a=> a.ActConcepto == "AMPL. PLAZO Y OBRA ADICIONAL" ||
+                                                       a.ActConcepto == "OBRA EXTRA" ||
+                                                       a.ActConcepto == "OBRA ADICIONAL" ||
+                                                       a.ActConcepto == "OBRA ADICIONAL Y EXTRA").Count(),
+                PryAdicionesValor = p.Actas.Where(a => a.ActConcepto == "AMPL. PLAZO Y OBRA ADICIONAL" ||
+                                                       a.ActConcepto == "OBRA EXTRA" ||
+                                                       a.ActConcepto == "OBRA ADICIONAL" ||
+                                                       a.ActConcepto == "OBRA ADICIONAL Y EXTRA").Sum(a=> a.ActValorAdicion),
                 PryValorFinal = p.PryValorFinal,
                 PryFormalidad = p.PryFormalidad,
                 PryValorOfertado = p.PryValorOfertado,
-                PryReajustesNumero = p.PryReajustesNumero,
-                PryReajustesValor = p.PryReajustesValor,
-                PryValorAnticipo = p.PryValorAnticipo,
+                PryReajustesNumero = p.Actas.Where(a => a.ActConcepto == "REAJUSTE").Count(),
+                PryReajustesValor = p.Actas.Where(a => a.ActConcepto == "REAJUSTE").Sum(a=> a.ActValorReajuste),
+                PryValorAnticipo = p.Actas.Sum(a => a.ActValorAnticipo),
                 PryAlertaActiva = p.PryAlertaActiva,
                 PryEjecutado = p.PryEjecutado,
                 PryFechaContrato = p.PryFechaContrato,
