@@ -124,7 +124,9 @@ namespace CeoWebServices.Controllers
                 return BadRequest(ModelState);
             }
 
-            List<AreaProyecto> areaProyectos = await _context.AreaProyecto.Include(a=> a.ApyIdAreaNavigation).Where(a => a.ApyIdProyecto.Equals(idProject)).ToListAsync();
+            List<AreaProyecto> areaProyectos = await _context.AreaProyecto.Include(
+                                                     a=> a.ApyIdAreaNavigation).Where
+                                                     (a => a.ApyIdProyecto.Equals(idProject)).ToListAsync();
 
 
             if (areaProyectos == null)
