@@ -179,6 +179,7 @@ namespace CeoWebServices.Controllers
 
             return Ok(proyectos);
         }
+
         // GET: api/Proyectos/clientes
 
         [HttpGet("clientes")]
@@ -210,76 +211,95 @@ namespace CeoWebServices.Controllers
             return Ok(empresas);
         }
 
-        // PUT: api/Proyectos/5
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutProyectos([FromRoute] decimal id, [FromBody] Proyectos proyectos)
+        [HttpGet("Countries")]
+        public async Task<IActionResult> GetCountries()
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
+            List<Countries> countries = await _context.Countries.ToListAsync();
 
-            if (id != proyectos.PryIdProyecto)
-            {
-                return BadRequest();
-            }
-
-            _context.Entry(proyectos).State = EntityState.Modified;
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!ProyectosExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            return NoContent();
-        }
-
-        // POST: api/Proyectos
-        [HttpPost]
-        public async Task<IActionResult> PostProyectos([FromBody] Proyectos proyectos)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            _context.Proyectos.Add(proyectos);
-            await _context.SaveChangesAsync();
-
-            return CreatedAtAction("GetProyectos", new { id = proyectos.PryIdProyecto }, proyectos);
-        }
-
-        // DELETE: api/Proyectos/5
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteProyectos([FromRoute] decimal id)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            var proyectos = await _context.Proyectos.FindAsync(id);
-            if (proyectos == null)
+            if (countries == null)
             {
                 return NotFound();
             }
 
-            _context.Proyectos.Remove(proyectos);
-            await _context.SaveChangesAsync();
-
-            return Ok(proyectos);
+            return Ok(countries);
         }
+
+
+
+        //// PUT: api/Proyectos/5
+        //[HttpPut("{id}")]
+        //public async Task<IActionResult> PutProyectos([FromRoute] decimal id, [FromBody] Proyectos proyectos)
+        //{
+        //    if (!ModelState.IsValid)
+        //    {
+        //        return BadRequest(ModelState);
+        //    }
+
+        //    if (id != proyectos.PryIdProyecto)
+        //    {
+        //        return BadRequest();
+        //    }
+
+        //    _context.Entry(proyectos).State = EntityState.Modified;
+
+        //    try
+        //    {
+        //        await _context.SaveChangesAsync();
+        //    }
+        //    catch (DbUpdateConcurrencyException)
+        //    {
+        //        if (!ProyectosExists(id))
+        //        {
+        //            return NotFound();
+        //        }
+        //        else
+        //        {
+        //            throw;
+        //        }
+        //    }
+
+        //    return NoContent();
+        //}
+
+        //// POST: api/Proyectos
+        //[HttpPost]
+        //public async Task<IActionResult> PostProyectos([FromBody] Proyectos proyectos)
+        //{
+        //    if (!ModelState.IsValid)
+        //    {
+        //        return BadRequest(ModelState);
+        //    }
+
+        //    _context.Proyectos.Add(proyectos);
+        //    await _context.SaveChangesAsync();
+
+        //    return CreatedAtAction("GetProyectos", new { id = proyectos.PryIdProyecto }, proyectos);
+        //}
+
+        //// DELETE: api/Proyectos/5
+        //[HttpDelete("{id}")]
+        //public async Task<IActionResult> DeleteProyectos([FromRoute] decimal id)
+        //{
+        //    if (!ModelState.IsValid)
+        //    {
+        //        return BadRequest(ModelState);
+        //    }
+
+        //    var proyectos = await _context.Proyectos.FindAsync(id);
+        //    if (proyectos == null)
+        //    {
+        //        return NotFound();
+        //    }
+
+        //    _context.Proyectos.Remove(proyectos);
+        //    await _context.SaveChangesAsync();
+
+        //    return Ok(proyectos);
+        //}
 
         private bool ProyectosExists(decimal id)
         {

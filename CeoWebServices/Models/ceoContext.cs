@@ -25,6 +25,7 @@ namespace CeoWebServices.Models
         public virtual DbSet<CategoriaDocumento> CategoriaDocumento { get; set; }
         public virtual DbSet<CategoriaEmpresas> CategoriaEmpresas { get; set; }
         public virtual DbSet<Categorias> Categorias { get; set; }
+        public virtual DbSet<Cities> Cities { get; set; }
         public virtual DbSet<Ciudades> Ciudades { get; set; }
         public virtual DbSet<Consorcio> Consorcio { get; set; }
         public virtual DbSet<Contactos> Contactos { get; set; }
@@ -34,6 +35,7 @@ namespace CeoWebServices.Models
         public virtual DbSet<ContratistasTitulo> ContratistasTitulo { get; set; }
         public virtual DbSet<ContratosDetalle> ContratosDetalle { get; set; }
         public virtual DbSet<ContratosProveedor> ContratosProveedor { get; set; }
+        public virtual DbSet<Countries> Countries { get; set; }
         public virtual DbSet<Departamentos> Departamentos { get; set; }
         public virtual DbSet<Direcciones> Direcciones { get; set; }
         public virtual DbSet<EmpProductoServicio> EmpProductoServicio { get; set; }
@@ -52,6 +54,7 @@ namespace CeoWebServices.Models
         public virtual DbSet<Retefuente> Retefuente { get; set; }
         public virtual DbSet<Rup> Rup { get; set; }
         public virtual DbSet<Smmlv> Smmlv { get; set; }
+        public virtual DbSet<States> States { get; set; }
         public virtual DbSet<SubcategoriaContratistas> SubcategoriaContratistas { get; set; }
         public virtual DbSet<SubcategoriaContratos> SubcategoriaContratos { get; set; }
         public virtual DbSet<Telefonos> Telefonos { get; set; }
@@ -468,6 +471,51 @@ namespace CeoWebServices.Models
                 entity.Property(e => e.DesCat)
                     .HasColumnName("des_cat")
                     .HasMaxLength(50);
+            });
+
+            modelBuilder.Entity<Cities>(entity =>
+            {
+                entity.ToTable("cities");
+
+                entity.Property(e => e.Id)
+                    .HasColumnName("id")
+                    .HasColumnType("numeric(8,0)");
+
+                entity.Property(e => e.CountryId)
+                    .HasColumnName("country_id")
+                    .HasColumnType("numeric(8,0)");
+
+                entity.Property(e => e.CreatedAt)
+                    .HasColumnName("created_at")
+                    .HasDefaultValueSql("'2013-12-31 19:31:01'::timestamp without time zone");
+
+                entity.Property(e => e.Flag)
+                    .HasColumnName("flag")
+                    .HasColumnType("numeric(1,0)")
+                    .HasDefaultValueSql("1::numeric");
+
+                entity.Property(e => e.Name)
+                    .IsRequired()
+                    .HasColumnName("name")
+                    .HasMaxLength(255);
+
+                entity.Property(e => e.StateId)
+                    .HasColumnName("state_id")
+                    .HasColumnType("numeric(8,0)");
+
+                entity.Property(e => e.UpdatedOn).HasColumnName("updated_on");
+
+                entity.HasOne(d => d.Country)
+                    .WithMany(p => p.Cities)
+                    .HasForeignKey(d => d.CountryId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("cities_ibfk_2");
+
+                entity.HasOne(d => d.State)
+                    .WithMany(p => p.Cities)
+                    .HasForeignKey(d => d.StateId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("cities_ibfk_1");
             });
 
             modelBuilder.Entity<Ciudades>(entity =>
@@ -1009,6 +1057,54 @@ namespace CeoWebServices.Models
                 entity.Property(e => e.CpvValorCont)
                     .HasColumnName("cpv_valor_cont")
                     .HasMaxLength(200);
+            });
+
+            modelBuilder.Entity<Countries>(entity =>
+            {
+                entity.ToTable("countries");
+
+                entity.Property(e => e.Id)
+                    .HasColumnName("id")
+                    .HasColumnType("numeric(8,0)");
+
+                entity.Property(e => e.Capital)
+                    .HasColumnName("capital")
+                    .HasMaxLength(255)
+                    .HasDefaultValueSql("NULL::character varying");
+
+                entity.Property(e => e.CreatedAt).HasColumnName("created_at");
+
+                entity.Property(e => e.Currency)
+                    .HasColumnName("currency")
+                    .HasMaxLength(255)
+                    .HasDefaultValueSql("NULL::character varying");
+
+                entity.Property(e => e.Flag)
+                    .HasColumnName("flag")
+                    .HasColumnType("numeric(1,0)")
+                    .HasDefaultValueSql("1::numeric");
+
+                entity.Property(e => e.Iso2)
+                    .HasColumnName("iso2")
+                    .HasColumnType("character(2)")
+                    .HasDefaultValueSql("NULL::bpchar");
+
+                entity.Property(e => e.Iso3)
+                    .HasColumnName("iso3")
+                    .HasColumnType("character(3)")
+                    .HasDefaultValueSql("NULL::bpchar");
+
+                entity.Property(e => e.Name)
+                    .IsRequired()
+                    .HasColumnName("name")
+                    .HasMaxLength(100);
+
+                entity.Property(e => e.Phonecode)
+                    .HasColumnName("phonecode")
+                    .HasMaxLength(255)
+                    .HasDefaultValueSql("NULL::character varying");
+
+                entity.Property(e => e.UpdatedAt).HasColumnName("updated_at");
             });
 
             modelBuilder.Entity<Departamentos>(entity =>
@@ -1905,6 +2001,39 @@ namespace CeoWebServices.Models
                 entity.Property(e => e.SmmValue)
                     .HasColumnName("smm_value")
                     .HasColumnType("numeric(12,4)");
+            });
+
+            modelBuilder.Entity<States>(entity =>
+            {
+                entity.ToTable("states");
+
+                entity.Property(e => e.Id)
+                    .HasColumnName("id")
+                    .HasColumnType("numeric(8,0)");
+
+                entity.Property(e => e.CountryId)
+                    .HasColumnName("country_id")
+                    .HasColumnType("numeric(8,0)");
+
+                entity.Property(e => e.CreatedAt).HasColumnName("created_at");
+
+                entity.Property(e => e.Flag)
+                    .HasColumnName("flag")
+                    .HasColumnType("numeric(1,0)")
+                    .HasDefaultValueSql("1::numeric");
+
+                entity.Property(e => e.Name)
+                    .IsRequired()
+                    .HasColumnName("name")
+                    .HasMaxLength(255);
+
+                entity.Property(e => e.UpdatedAt).HasColumnName("updated_at");
+
+                entity.HasOne(d => d.Country)
+                    .WithMany(p => p.States)
+                    .HasForeignKey(d => d.CountryId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("country_state");
             });
 
             modelBuilder.Entity<SubcategoriaContratistas>(entity =>
