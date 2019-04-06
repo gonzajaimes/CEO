@@ -218,7 +218,7 @@ namespace CeoWebServices.Controllers
             {
                 return BadRequest(ModelState);
             }
-            List<Countries> countries = await _context.Countries.ToListAsync();
+            List<Countries> countries = await _context.Countries.Where(c=> c.Cities.Count() > 0).ToListAsync();
 
             if (countries == null)
             {
