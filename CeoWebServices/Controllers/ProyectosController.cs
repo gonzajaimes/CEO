@@ -114,6 +114,26 @@ namespace CeoWebServices.Controllers
             return Ok(proyectos);
         }
 
+
+        // GET: api/Proyectos/Last
+        [HttpGet("Last")]
+        public async Task<IActionResult> GetLastProject()
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var proyectos = await _context.Proyectos.OrderByDescending(p=>p.PryIdProyecto).FirstOrDefaultAsync();
+
+            if (proyectos == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(proyectos);
+        }
+
         // GET: api/Proyectos/areaproyectos/id
 
         [HttpGet("areaproyectos/{idProject}")]
