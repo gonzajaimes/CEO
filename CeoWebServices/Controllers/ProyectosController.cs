@@ -82,9 +82,24 @@ namespace CeoWebServices.Controllers
                 PryAmortForwardPayment = p.Actas.Sum(a => a.ActValorAmortizaAnticipo),
                 PryBalanceForwardPayment = p.Actas.Sum(a => a.ActValorAnticipo) - p.Actas.Sum(a => a.ActValorAmortizaAnticipo),
                 PryWarrantyFund = p.Actas.Sum(a => a.ActValorfg),
-                PryExecValue = p.Actas.Sum(a => a.ActValorEjecutado),
-                PryExecValueBefVat = p.Actas.Sum(a => a.ActValorAntesiva),
-                PryVatValue = p.Actas.Sum(a => a.ActValorIva),
+                PryExecValue = _context.Proyectos.Where(pry=> pry.PryIdProyPadre == p.PryIdProyecto).Count() > 0? 
+                               _context.Proyectos.Where(c=> c.PryIdProyPadre == p.PryIdProyecto).
+                                Join( _context.Actas, pry=> pry.PryIdProyecto, act=> act.ActIdProyecto, 
+                                    (pry,act) => new { proyecto = pry, acta = act })
+                                .Sum(ac => ac.acta.ActValorEjecutado) : 
+                                 p.Actas.Sum(a => a.ActValorEjecutado),
+                PryExecValueBefVat = _context.Proyectos.Where(pry => pry.PryIdProyPadre == p.PryIdProyecto).Count() > 0 ?
+                                     _context.Proyectos.Where(c => c.PryIdProyPadre == p.PryIdProyecto).
+                                      Join(_context.Actas, pry => pry.PryIdProyecto, act => act.ActIdProyecto,
+                                          (pry, act) => new { proyecto = pry, acta = act })
+                                     .Sum(ac => ac.acta.ActValorAntesiva) :
+                                     p.Actas.Sum(a => a.ActValorAntesiva),
+                PryVatValue = _context.Proyectos.Where(pry => pry.PryIdProyPadre == p.PryIdProyecto).Count() > 0 ?
+                              _context.Proyectos.Where(c => c.PryIdProyPadre == p.PryIdProyecto).
+                              Join(_context.Actas, pry => pry.PryIdProyecto, act => act.ActIdProyecto,
+                                  (pry, act) => new { proyecto = pry, acta = act })
+                              .Sum(ac => ac.acta.ActValorIva) :
+                              p.Actas.Sum(a => a.ActValorIva),
                 PrySMLV = p.PryEjecutado == "N"? null : 
                           p.Actas.Sum(a => a.ActValorEjecutado) /
                            _context.Smmlv.Where(s => s.SmmYear == p.Actas.Where(
